@@ -4,6 +4,7 @@ class Vehicle < ActiveRecord::Base
   has_many :line_items
 
   validate :colour_valid? 
+  validates_numericality_of :inventory_quantity, :greater_than_or_equal_to => 0
 
   COLOUR = ['yellow', 'blue', 'silver', 'red', 'black', 'green', 'pink', 'white', 'grey', 'orange']
   # COLOUR.include? co.downcase
