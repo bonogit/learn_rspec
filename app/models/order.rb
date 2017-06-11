@@ -1,16 +1,22 @@
-class MyCustomError < StandardError
-  attr_reader :errors
-  def initialize(errors)
-    @errors = errors
-  end
-end
-
+require 'csv'
 class Order < ActiveRecord::Base
   belongs_to :dealer
   has_many :line_items, :dependent => :destroy
   
-  validates_format_of :expect_delivery_date, :with => /\d{4}\-\d{2}\-\d{2}/, 
-  					  :message => "Date must be in the following format: yyyy-mm-dd"
+  validates :expect_delivery_date, date: true
+  
+  def self.create_order_by_dealer dealer, filename, delivery_date
+    ActiveRecord::Base.transaction do
+      new_order = dealer.orders.create!(expect_delivery_date: delivery_date)
+      CSV.foreach(filename, headers: true,
+                :header_converters => lambda { |h| h.to_s.downcase.gsub(' ', '')}) do |row| 
+          LineItem.create_item new_order, row
+      end
+      return "order is created!" 
+    end
+  rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid => exception
+    return exception.message
+  end
 
   def self.create_order_by_file order_info, dealer
     dealer.orders.create(expect_delivery_date: order_info['deliverydate'])
@@ -25,19 +31,17 @@ class Order < ActiveRecord::Base
   end
 
   def self.fulfill order_id
-  	# order = Order.find_by(id: order_id, status: 'ordered')
-    raise MyCustomError.new('order already delivered!') unless order = Order.find_by(id: order_id, status: 'ordered')
-  	#order has two status: orderde(by default) and fulfilled
-  	#status will be toggled when order fulfilled
-	  ActiveRecord::Base.transaction do
-	      order.update_attributes(:status => 'fulfilled', :fulfill_date => DateTime.now)
-	      order.line_items.each do |line_item|
-	        line_item.vehicle.decrement!(:inventory_quantity, line_item.quantity)
-	      end
-        return 'order fulfilled succeed!'
+  # 	#order has two status: orderde(by default) and fulfilled
+  # 	#status will be toggled when order fulfilled
+    ActiveRecord::Base.transaction do
+      order = Order.find_by!(id: order_id, status: 'ordered')
+      order.update_attributes(:status => 'fulfilled', :fulfill_date => DateTime.now)
+      order.line_items.each do |line_item|
+       line_item.vehicle.decrement!(:inventory_quantity, line_item.quantity)
+      end
+      return 'order delivered!'
     end
-  ##TODO catch and return transaction message
-  rescue MyCustomError => exception
-    return exception.errors
+    rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid => exception
+      return exception.message
   end
 end

@@ -14,7 +14,7 @@ RSpec.describe Vehicle, type: :model do
   end
 
   describe "Validations" do
-    subject { described_class.create(vehicle_model_id: 1, vehicle_badge_id: 1, colour: 'red', inventory_quantity: 10)}
+    subject { described_class.new(vehicle_model_id: 1, vehicle_badge_id: 1, colour: 'red', inventory_quantity: 10)}
     it "is valid with valid attributes" do
   	  subject.vehicle_model_id = VehicleModel.create(name: 'fiesta').id
       subject.vehicle_badge_id = VehicleBadge.create(name: 'st').id

@@ -29,7 +29,12 @@ module Services
 
   ##Q4 show historic total quantities of each vehicle
   def self.show_total_quantities
-  	total_quantities = LineItem.sum_vehicle_sales
+  	total_sales = LineItem.sum_vehicle_sales
+    #count result format vehicle_id=>quantity
+    total_sales.count.each do |k,v|
+      vehicle = Vehicle.find(k)
+      puts "total sales of #{vehicle.vehicle_model.name} is #{v}"
+    end
   end
 
   ##Q5 show stock levels of each vehicle order by stock level
