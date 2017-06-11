@@ -58,21 +58,21 @@ RSpec.describe Order, type: :model do
       model = VehicleModel.create(name: 'mustang')
       badge = VehicleBadge.create(name: 'invalid badge')
       vehicle = Vehicle.create(vehicle_model: model, vehicle_badge: badge, colour: 'yellow', inventory_quantity: 30)
-      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "Validation failed: " 
+      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "vehicle not exist" 
     end
     it "can not create order or line item with invalid quantity" do
       dealer = Dealer.create(name: 'dealer1', dealer_unify_id: '1234')
       model = VehicleModel.create(name: 'mustang')
       badge = VehicleBadge.create(name: 'gt fastback')
       vehicle = Vehicle.create(vehicle_model: model, vehicle_badge: badge, colour: 'yellow', inventory_quantity: 1)
-      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "Validation failed: " 
+      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "vehicle not exist" 
     end
     it "can not create order or line item with invalid colour" do
       dealer = Dealer.create(name: 'dealer1', dealer_unify_id: '1234')
       model = VehicleModel.create(name: 'mustang')
       badge = VehicleBadge.create(name: 'gt fastback')
       vehicle = Vehicle.create(vehicle_model: model, vehicle_badge: badge, colour: 'red', inventory_quantity: 30)
-      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "Validation failed: " 
+      expect(described_class.create_order_by_dealer(dealer,'order_test.csv','2017-06-30')).to eq "vehicle not exist" 
     end
   end
 

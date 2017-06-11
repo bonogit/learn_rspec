@@ -14,7 +14,7 @@ class Order < ActiveRecord::Base
       end
       return "order is created!" 
     end
-  rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid => exception
+  rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid, Error::LineItemError => exception
     return exception.message
   end
 

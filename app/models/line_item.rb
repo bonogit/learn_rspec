@@ -1,3 +1,10 @@
+class LineItemError < StandardError
+  attr_reader :data
+  def initialize(data)
+    @data = data
+  end
+end
+
 class LineItem < ActiveRecord::Base
   belongs_to :order
   belongs_to :vehicle
@@ -11,7 +18,8 @@ class LineItem < ActiveRecord::Base
   	#create line item associated with order&vehicle model
   	  item = new_order.line_items.create!(feature: order_item['features'], quantity: order_item['quantity'], vehicle_id: Vehicle.exist_vehicle(order_item).id)
     else
-      raise ActiveRecord::RecordInvalid.new new_order
+      # raise ActiveRecord::RecordInvalid.new new_order
+      raise Error::LineItemError.new 'vehicle not exist'
     end
   end
 

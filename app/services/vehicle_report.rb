@@ -17,7 +17,7 @@ module Services
       case outstanding_orders
       when false
       #show error message if dealer not found
-  	  puts 'dealer not exist'
+  	    puts 'dealer not exist'
   	  when []
     	#show none exist msg when dealer not having outstanding 
     	  puts "#{dealer_name} has no outstading order"
