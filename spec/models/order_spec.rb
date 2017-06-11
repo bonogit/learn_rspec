@@ -8,20 +8,10 @@ RSpec.describe Order, type: :model do
       subject.dealer_id = dealer.id
       expect(subject).to be_valid
     end
-    
     it "is not valid without valid date" do
       subject.expect_delivery_date = '2017-02-30'
       expect(subject).to_not be_valid
     end
-  end
-
-  describe ".create_order_by_file" do
-  	it "create order with valid date" do
-	  	order_info = {'deliverydate'=>"2017-06-30"}
-	  	dealer = Dealer.create(name: 'dealer1')
-	  	order = described_class.create_order_by_file order_info, dealer
-	  	expect(order).to be_valid
-	end
   end
 
   describe ".show_outstandings" do

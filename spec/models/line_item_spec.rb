@@ -33,10 +33,10 @@ RSpec.describe LineItem, type: :model do
   	  order1 = dealer.orders.create(expect_delivery_date: "2017-06-30")
   	  item11 = order1.line_items.create(vehicle: vehicle1, feature: 'MSCN', quantity: 2)
   	  item12 = order1.line_items.create(vehicle: vehicle2, feature: 'MSCN', quantity: 4)
-	  order2 = Order.create(dealer: dealer, expect_delivery_date: "2017-07-30")
-	  item21 = described_class.create(order: order2, vehicle: vehicle2, feature: 'MSCN', quantity: 1)
-	  res = {vehicle2.id => 5,vehicle1.id => 2}
-  	  expect(described_class.sum_vehicle_sales.count).to eq res
+	    order2 = Order.create(dealer: dealer, expect_delivery_date: "2017-07-30")
+	    item21 = described_class.create(order: order2, vehicle: vehicle2, feature: 'MSCN', quantity: 1)
+	    res = {vehicle2.id => 5,vehicle1.id => 2}
+  	  expect(described_class.sum_vehicle_sales).to eq res
   	end
   end
 end

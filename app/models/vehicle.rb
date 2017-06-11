@@ -3,10 +3,9 @@ class Vehicle < ActiveRecord::Base
   belongs_to :vehicle_badge
   has_many :line_items
 
-  validate :colour_valid? 
+  validates_inclusion_of :colour, in: ['yellow', 'blue', 'silver', 'red', 'black', 'green', 'pink', 'white', 'grey', 'orange']
   validates_numericality_of :inventory_quantity, :greater_than_or_equal_to => 0
 
-  COLOUR = ['yellow', 'blue', 'silver', 'red', 'black', 'green', 'pink', 'white', 'grey', 'orange']
   # COLOUR.include? co.downcase
 
   def self.exist? order_item
@@ -21,8 +20,4 @@ class Vehicle < ActiveRecord::Base
     Vehicle.includes(:vehicle_badge, :vehicle_model).order(inventory_quantity: :desc)
   end
 
-  private 
-  def colour_valid?
-  	errors.add(:colour, "colour not exist")	if !COLOUR.include? colour
-  end
 end

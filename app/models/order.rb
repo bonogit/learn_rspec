@@ -18,10 +18,6 @@ class Order < ActiveRecord::Base
     return exception.message
   end
 
-  def self.create_order_by_file order_info, dealer
-    dealer.orders.create(expect_delivery_date: order_info['deliverydate'])
-  end
-
   def self.show_outstandings
   	Order.includes(:dealer).where(status: 'ordered')
   end

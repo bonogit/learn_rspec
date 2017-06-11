@@ -1,7 +1,7 @@
 class LineItem < ActiveRecord::Base
   belongs_to :order
   belongs_to :vehicle
-  validate :feature_valid? 
+  validate :feature_valid
 
   FEATURE = {'M'=> 'metallic', 'S'=> 'seat warmers', 'C'=> 'climate control', 'N'=> 'navigation'}
 
@@ -16,12 +16,13 @@ class LineItem < ActiveRecord::Base
   end
 
   def self.sum_vehicle_sales
-  	result = LineItem.includes(vehicle: [:vehicle_model, :vehicle_badge]).order("vehicle_models.name, vehicle_badges.name, vehicles.colour").group(:vehicle_id)
+  	# result = LineItem.includes(vehicle: [:vehicle_model, :vehicle_badge]).order("vehicle_models.name, vehicle_badges.name, vehicles.colour").group(:vehicle_id)
+    result = LineItem.includes(:vehicle).group(:vehicle_id).order("vehicles.vehicle_model_id, vehicles.vehicle_badge_id, vehicles.colour").sum(:quantity)
   end
 
   private
   #feature valid check activerecord method
-  def feature_valid? 
+  def feature_valid
   	valid_check = feature.split('').map{|ft| FEATURE.keys.include? ft.upcase}
   	errors.add(:feature, "feature not exist") if valid_check.include? false
   end
