@@ -5,7 +5,7 @@ class Order < ActiveRecord::Base
   
   validates :expect_delivery_date, date: true
   
-  def self.create_order_by_dealer dealer, filename, delivery_date
+  def self.create_order_by_dealer(dealer, filename, delivery_date)
     ActiveRecord::Base.transaction do
       new_order = dealer.orders.create!(expect_delivery_date: delivery_date)
       CSV.foreach(filename, headers: true,
@@ -26,9 +26,8 @@ class Order < ActiveRecord::Base
   	Order.where(status: 'fulfilled').order(:fulfill_date)
   end
 
-  def self.fulfill order_id
-  # 	#order has two status: orderde(by default) and fulfilled
-  # 	#status will be toggled when order fulfilled
+  def self.fulfill(order_id)
+  #order has two status: ordered(by default) and fulfilled
     ActiveRecord::Base.transaction do
       order = Order.find_by!(id: order_id, status: 'ordered')
       order.update_attributes(:status => 'fulfilled', :fulfill_date => DateTime.now)
@@ -37,7 +36,7 @@ class Order < ActiveRecord::Base
       end
       return 'order delivered!'
     end
-    rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid => exception
-      return exception.message
+  rescue ActiveRecord::RecordNotFound,ActiveRecord::RecordInvalid,ActiveRecord::StatementInvalid => exception
+    return exception.message
   end
 end

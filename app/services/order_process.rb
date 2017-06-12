@@ -6,7 +6,6 @@ module Services
 	def self.get_order filename
 	  #assume files are store on rails root folder
 	  filename = File.join Rails.root, filename
-	  #fetch first row to create a order
 	  order_info = CSV.open(filename, 'r', headers: true, 
 	    					:header_converters => 
 	    					lambda { |h| h.to_s.downcase.gsub(' ', '')}){|row| row.first}

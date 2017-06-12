@@ -14,7 +14,7 @@ RSpec.describe Dealer, type: :model do
 
 
     it "should return false when dealer not exist" do
-      expect(described_class.search_outstanding('dealer0')).to eq false
+      expect(described_class.search_outstanding('dealer0')).to eq nil
     end
 
   end
